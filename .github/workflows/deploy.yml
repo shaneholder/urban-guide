@@ -1,0 +1,38 @@
+name: Build and Deploy to Azure
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install frontend dependencies
+        run: npm install
+        working-directory: ./src/github/azure-login
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: ./src/github/azure-login
+
+      - name: Install backend dependencies
+        run: npm install
+        working-directory: ./src/github/azure-login/backend
+
+      - name: Deploy to Azure
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'YOUR_APP_NAME'
+          slot-name: 'production'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
