@@ -1,6 +1,7 @@
 import React from 'react';
 import { useMsal } from "@azure/msal-react";
 import { loginRequest } from '../config/msal';
+import styles from './LoginButton.module.css';
 
 const LoginButton = () => {
   const { instance } = useMsal();
@@ -10,9 +11,11 @@ const LoginButton = () => {
   };
 
   return (
-    <button onClick={handleLogin}>
-      Sign in with Azure
-    </button>
+    <div className={styles.container}>
+      <button className={styles.loginButton} onClick={handleLogin}>
+        Sign in with Azure
+      </button>
+    </div>
   );
 };
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useMsal } from "@azure/msal-react";
 import { fetchAzureResources } from '../services/azureApi';
 import { loginRequest } from '../config/msal';
+import styles from './ResourceList.module.css';
 
 interface Resource {
   id: string;
@@ -13,6 +14,7 @@ const ResourceList = () => {
   const { instance, accounts } = useMsal();
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const getResources = async () => {
@@ -25,6 +27,7 @@ const ResourceList = () => {
         setResources(data);
       } catch (error) {
         console.error('Error fetching resources:', error);
+        setError('Error fetching resources');
       } finally {
         setLoading(false);
       }
@@ -33,14 +36,16 @@ const ResourceList = () => {
     getResources();
   }, [instance, accounts]);
 
-  if (loading) return <div>Loading resources...</div>;
-
   return (
-    <div>
+    <div className={styles.container}>
       <h2>Your Azure Resources</h2>
-      <ul>
+      {loading && <p>Loading resources...</p>}
+      {error && <p>Error: {error}</p>}
+      <ul className={styles.list}>
         {resources.map(resource => (
-          <li key={resource.id}>{resource.displayName} - {resource.type}</li>
+          <li key={resource.id} className={styles.listItem}>
+            {resource.displayName} - {resource.type}
+          </li>
         ))}
       </ul>
     </div>
