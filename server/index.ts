@@ -19,6 +19,13 @@ interface AzureResponse {
   value: AzureSubscription[];
 }
 
+interface ResourceGroup {
+  id: string;
+  name: string;
+  location: string;
+  type: string;
+}
+
 const app = express();
 const port = process.env.PORT || 3001;
 
@@ -47,6 +54,27 @@ app.get('/api/resources', async (req: Request, res: Response) => {
     res.json(data.value);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch Azure resources' });
+  }
+});
+
+app.get('/api/subscriptions/:subscriptionId/resourceGroups', async (req: Request, res: Response) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  const { subscriptionId } = req.params;
+  
+  try {
+    const response = await fetch(
+      `https://management.azure.com/subscriptions/${subscriptionId}/resourcegroups?api-version=2021-04-01`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    
+    const data = await response.json() as ResourceGroup[];
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch resource groups' });
   }
 });
 

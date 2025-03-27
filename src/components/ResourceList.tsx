@@ -3,6 +3,7 @@ import { useMsal } from "@azure/msal-react";
 import { fetchAzureResources } from '../services/azureApi';
 import { loginRequest } from '../config/msal';
 import styles from './ResourceList.module.css';
+import ResourceGroups from './ResourceGroups';
 
 interface Resource {
   id: string;
@@ -10,11 +11,17 @@ interface Resource {
   type: string;
 }
 
+interface Subscription {
+  subscriptionId: string;
+  displayName: string;
+}
+
 const ResourceList = () => {
   const { instance, accounts } = useMsal();
-  const [resources, setResources] = useState<Resource[]>([]);
+  const [subscriptions, setResources] = useState<Subscription[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
 
   useEffect(() => {
     const getResources = async () => {
@@ -36,18 +43,33 @@ const ResourceList = () => {
     getResources();
   }, [instance, accounts]);
 
+  const handleSubscriptionClick = (subscription: Subscription) => {
+    setSelectedSubscription(subscription);
+  };
+
   return (
     <div className={styles.container}>
-      <h2>Your Azure Resources</h2>
-      {loading && <p>Loading resources...</p>}
+      <h2>Your Azure Subscriptions</h2>
+      {loading && <p>Loading subscriptions...</p>}
       {error && <p>Error: {error}</p>}
-      <ul className={styles.list}>
-        {resources.map(resource => (
-          <li key={resource.id} className={styles.listItem}>
-            {resource.displayName} - {resource.type}
-          </li>
-        ))}
-      </ul>
+      <div className={styles.grid}>
+        <ul className={styles.list}>
+          {subscriptions.map(sub => (
+            <li 
+              key={sub.subscriptionId} 
+              className={`${styles.listItem} ${selectedSubscription?.subscriptionId === sub.subscriptionId ? styles.selected : ''}`}
+              onClick={() => handleSubscriptionClick(sub)}
+            >
+              {sub.displayName}
+            </li>
+          ))}
+        </ul>
+        {selectedSubscription && (
+          <ResourceGroups 
+            subscriptionId={selectedSubscription.subscriptionId}
+          />
+        )}
+      </div>
     </div>
   );
 };
