@@ -1,7 +1,23 @@
 import express from 'express';
 import cors from 'cors';
 import { Request, Response } from 'express';
-import fetch from 'node-fetch';
+import fetch, { Response as FetchResponse } from 'node-fetch';
+
+interface AzureSubscription {
+  id: string;
+  subscriptionId: string;
+  displayName: string;
+  state: string;
+  subscriptionPolicies: {
+    locationPlacementId: string;
+    quotaId: string;
+    spendingLimit: string;
+  };
+}
+
+interface AzureResponse {
+  value: AzureSubscription[];
+}
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -27,7 +43,7 @@ app.get('/api/resources', async (req: Request, res: Response) => {
       }
     );
     
-    const data = await response.json();
+    const data = await response.json() as AzureResponse;
     res.json(data.value);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch Azure resources' });
