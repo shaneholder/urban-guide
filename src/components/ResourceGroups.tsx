@@ -6,6 +6,11 @@ interface ResourceGroup {
   id: string;
   name: string;
   location: string;
+  type: string;
+  properties: {
+    provisioningState: string;
+  };
+  tags?: Record<string, string>;
 }
 
 interface ResourceGroupsProps {
@@ -36,7 +41,7 @@ const ResourceGroups = ({ subscriptionId }: ResourceGroupsProps) => {
         );
 
         const data = await response.json();
-        setResourceGroups(data.value);
+        setResourceGroups(data);
         setLoading(false);
       } catch (error) {
         setError('Failed to fetch resource groups');
@@ -56,6 +61,9 @@ const ResourceGroups = ({ subscriptionId }: ResourceGroupsProps) => {
         {resourceGroups.map(group => (
           <li key={group.id} className={styles.listItem}>
             {group.name} - {group.location}
+            {group.properties.provisioningState && (
+              <span className={styles.state}> ({group.properties.provisioningState})</span>
+            )}
           </li>
         ))}
       </ul>
