@@ -13,7 +13,7 @@
       "console": "integratedTerminal"
     },
     {
-      "type": "edge",
+      "type": "msedge",
       "request": "launch",
       "name": "Debug Client",
       "url": "http://localhost:5173",

@@ -13,5 +13,5 @@ export const msalConfig: Configuration = {
 };
 
 export const loginRequest = {
-  scopes: ["https://management.azure.com/.default"]
+  scopes: ["https://management.azure.com/.default", "openid", "profile"]
 };
