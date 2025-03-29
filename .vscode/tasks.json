@@ -1,0 +1,27 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "start-vite",
+      "type": "npm",
+      "script": "start",
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "vite",
+        "pattern": {
+          "regexp": "^$"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "LOCAL",
+          "endsPattern": "ready in"
+        }
+      }
+    },
+    {
+      "label": "start-dev",
+      "dependsOn": ["start-vite"],
+      "problemMatcher": []
+    }
+  ]
+}

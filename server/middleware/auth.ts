@@ -26,8 +26,11 @@ interface AzureToken extends JwtPayload {
   ver: string;
 }
 
-
-export const authMiddleware = async (req: any, res: any, next: any) => {
+export const authMiddleware = async (
+  req: Request<any, any, any, any>, 
+  res: Response<any>, 
+  next: NextFunction
+): Promise<void | Response<any, Record<string, any>>> => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
 
@@ -41,17 +44,18 @@ export const authMiddleware = async (req: any, res: any, next: any) => {
     }
 
     try {
-      // const key = await client.getSigningKey(decodedToken.header.kid);
-      // const publicKey = key.getPublicKey();
+      const key = await client.getSigningKey(decodedToken.header.kid);
+      const publicKey = key.getPublicKey();
 
-      // const verified = jwt.verify(token, publicKey, {
-      //   algorithms: ['RS256'],
-      //   audience: process.env.VITE_AZURE_CLIENT_ID,
-      //   issuer: `https://login.microsoftonline.com/${process.env.VITE_AZURE_TENANT_ID}/v2.0`
-      // }) as AzureToken;
+      const verified = jwt.verify(token, publicKey, {
+        algorithms: ['RS256'],
+        audience: 'https://management.azure.com',
+        issuer: `https://sts.windows.net/${process.env.VITE_AZURE_TENANT_ID}/`        
+      }) as AzureToken;
 
-      // Add token payload to request for use in route handlers
-      req.user = true;
+      // // Add token payload to request for use in route handlers      
+      res.locals.user = verified;
+            
       next();
     } catch (verifyError) {
       console.error('Token verification failed:', verifyError);
