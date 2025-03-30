@@ -6,6 +6,8 @@ const client = jwksClient({
   jwksUri: `https://login.microsoftonline.com/${process.env.VITE_AZURE_TENANT_ID}/discovery/v2.0/keys`,
   cache: true,
   rateLimit: true,
+  jwksRequestsPerMinute: 5, // Rate limiting
+  timeout: 30000 // Timeout after 30s
 });
 
 interface AzureToken extends JwtPayload {
@@ -35,12 +37,12 @@ export const authMiddleware = async (
     const token = req.headers.authorization?.split(' ')[1];
 
     if (!token) {
-      return res.status(401).json({ error: 'No token provided' });
+      return res.status(401).json({ message: 'Authentication required' });
     }
 
     const decodedToken = jwt.decode(token, { complete: true });
     if (!decodedToken || !decodedToken.header.kid) {
-      return res.status(401).json({ error: 'Invalid token format' });
+      return res.status(401).json({ message: 'Invalid token format' });
     }
 
     try {
@@ -50,19 +52,24 @@ export const authMiddleware = async (
       const verified = jwt.verify(token, publicKey, {
         algorithms: ['RS256'],
         audience: 'https://management.azure.com',
-        issuer: `https://sts.windows.net/${process.env.VITE_AZURE_TENANT_ID}/`        
+        issuer: `https://sts.windows.net/${process.env.VITE_AZURE_TENANT_ID}/`,
+        clockTolerance: 30, // 30 seconds clock skew tolerance
+        maxAge: '1h' // Token must not be older than 1 hour
       }) as AzureToken;
 
-      // // Add token payload to request for use in route handlers      
+      // Check additional claims
+      if (!verified.oid || !verified.tid || verified.tid !== process.env.VITE_AZURE_TENANT_ID) {
+        throw new Error('Invalid token claims');
+      }
+
       res.locals.user = verified;
-            
       next();
     } catch (verifyError) {
       console.error('Token verification failed:', verifyError);
-      return res.status(401).json({ error: 'Token verification failed' });
+      return res.status(401).json({ message: 'Invalid token' });
     }
   } catch (error) {
-    console.error('Auth middleware error:', error);
-    res.status(500).json({ error: 'Internal authentication error' });
+    console.error('Auth error:', error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
