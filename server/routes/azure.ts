@@ -55,4 +55,32 @@ router.get('/subscriptions/:subscriptionId/resourceGroups', async (req, res) => 
   }
 });
 
+router.get('/roles', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    const response = await fetch(
+      'https://management.azure.com/providers/Microsoft.Authorization/roleDefinitions?api-version=2022-04-01',
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    const data = await response.json() as { value: any[] };
+    const roles = data.value.map((role: any) => ({
+      id: role.name,
+      roleName: role.properties.roleName,
+      description: role.properties.description,
+      type: role.properties.type === 'BuiltInRole' ? 'BuiltInRole' : 'CustomRole'
+    }));
+
+    res.json(roles);
+  } catch (error) {
+    console.error('Error fetching roles:', error);
+    res.status(500).json({ error: 'Failed to fetch roles' });
+  }
+});
+
+
 export default router;

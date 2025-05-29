@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useMsal } from "@azure/msal-react";
 import { loginRequest } from '../config/msal';
 import styles from './ResourceGroups.module.css';
+import AccessGroupCreate from './AccessGroupCreate';
+import { useAuth } from '../hooks/useAuth';
+import { fetchAzureResourceGroups } from '../services/azureApi';
+import { AuthError } from '@azure/msal-browser';
 
 interface ResourceGroup {
   id: string;
@@ -12,9 +16,11 @@ interface ResourceGroup {
 
 const ResourceGroups: React.FC<{ subscriptionId: string }> = ({ subscriptionId }) => {
   const { instance, accounts } = useMsal();
+  const { handleAuthError } = useAuth();
   const [resourceGroups, setResourceGroups] = useState<ResourceGroup[]>([]);
   const [selectedGroups, setSelectedGroups] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [showAccessCreate, setShowAccessCreate] = useState(false);
 
   useEffect(() => {
     const fetchResourceGroups = async () => {
@@ -23,23 +29,26 @@ const ResourceGroups: React.FC<{ subscriptionId: string }> = ({ subscriptionId }
           ...loginRequest,
           account: accounts[0]
         });
+        const authResult = await instance.acquireTokenSilent({
+                  ...loginRequest,
+                  account: accounts[0]
+                });
+        const data = await fetchAzureResourceGroups(authResult, subscriptionId)
         
-        const response = await fetch(`/api/subscriptions/${subscriptionId}/resourceGroups`, {
-          headers: {
-            'Authorization': `Bearer ${token.accessToken}`
-          }
-        });
-        const data = await response.json();
         setResourceGroups(data);
       } catch (error) {
-        console.error('Error fetching resource groups:', error);
+        if (error instanceof AuthError) {
+          await handleAuthError(error);
+        } else {
+          console.error('Error fetching resource groups:', error);
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchResourceGroups();
-  }, [subscriptionId, instance, accounts]);
+  }, [subscriptionId, instance, accounts, handleAuthError]);
 
   const toggleSelection = (id: string) => {
     const newSelected = new Set(selectedGroups);
@@ -59,13 +68,32 @@ const ResourceGroups: React.FC<{ subscriptionId: string }> = ({ subscriptionId }
     }
   };
 
+  const handleCreateAccess = () => {
+    if (selectedGroups.size === 0) return;
+    setShowAccessCreate(true);
+  };
+
+  if (showAccessCreate) {
+    return (
+      <AccessGroupCreate
+        selectedGroups={Array.from(selectedGroups)}
+        onCancel={() => setShowAccessCreate(false)}
+      />
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h2>Resource Groups</h2>
         <div className={styles.actions}>
-          <button className={styles.button}>Create</button>
-          <button className={styles.button} disabled={selectedGroups.size === 0}>Delete</button>
+          <button 
+            className={styles.button}
+            onClick={handleCreateAccess}
+            disabled={selectedGroups.size === 0}
+          >
+            Create Access Group
+          </button>
         </div>
       </div>
 

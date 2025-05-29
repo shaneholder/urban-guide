@@ -1,0 +1,91 @@
+.container {
+  padding: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.createButton {
+  padding: 6px 16px;
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.cancelButton {
+  padding: 6px 16px;
+  background-color: transparent;
+  border: 1px solid #0078d4;
+  color: #0078d4;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.content {
+  display: grid;
+  gap: 24px;
+}
+
+.section {
+  background: white;
+  padding: 24px;
+  border-radius: 2px;
+  border: 1px solid #eee;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #eee;
+  border-radius: 2px;
+}
+
+.rolesList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.roleItem {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) 2fr;
+  gap: 16px;
+  padding: 8px 12px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.roleItem:hover {
+  background-color: #f8f9fa;
+}
+
+.roleName {
+  font-weight: 600;
+  color: #0078d4;
+}
+
+.roleDescription {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.loading {
+  text-align: center;
+  padding: 24px;
+  color: #666;
+}
