@@ -14,6 +14,7 @@ const AccessGroupCreate: React.FC<AccessGroupCreateProps> = ({ selectedGroups, o
   const [roles, setRoles] = useState<AzureRole[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [selectedRole, setSelectedRole] = useState<string | null>(null);
 
   useEffect(() => {
     const loadRoles = async () => {
@@ -75,7 +76,11 @@ const AccessGroupCreate: React.FC<AccessGroupCreateProps> = ({ selectedGroups, o
           ) : (
             <div className={styles.rolesList}>
               {filteredRoles.map(role => (
-                <div key={role.id} className={styles.roleItem}>
+                <div 
+                  key={role.id} 
+                  className={`${styles.roleItem} ${selectedRole === role.id ? styles.selected : ''}`}
+                  onClick={() => setSelectedRole(role.id)}
+                >
                   <div className={styles.roleName}>{role.roleName}</div>
                   <div className={styles.roleDescription}>{role.description}</div>
                 </div>
