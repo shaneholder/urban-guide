@@ -1,4 +1,10 @@
 import React from 'react';
+import {
+  Home24Regular,
+  Apps24Regular,
+  BoxMultiple24Regular,
+  Star24Regular
+} from '@fluentui/react-icons';
 import styles from './AzureNavigation.module.css';
 import { SubscriptionDropdown } from './SubscriptionDropdown';
 import { useSubscription } from '../../context/SubscriptionContext';
@@ -7,10 +13,10 @@ export const AzureNavigation: React.FC = () => {
   const { selectedNav, setSelectedNav } = useSubscription();
 
   const navItems = [
-    { icon: '🏠', label: 'Home' },
-    { icon: '⚡', label: 'All services' },
-    { icon: '📦', label: 'Resource groups' },
-    { icon: '⭐', label: 'Favorites' }
+    { icon: <Home24Regular />, label: 'Home' },
+    { icon: <Apps24Regular />, label: 'All services' },
+    { icon: <BoxMultiple24Regular />, label: 'Resource groups' },
+    { icon: <Star24Regular />, label: 'Favorites' }
   ];
 
   const handleNavClick = (label: string) => {

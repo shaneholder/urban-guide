@@ -15,6 +15,7 @@ export const SubscriptionDropdown: React.FC = () => {
   const { selectedSubscription, setSelectedSubscription } = useSubscription();
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const getSubscriptions = async () => {
@@ -34,6 +35,12 @@ export const SubscriptionDropdown: React.FC = () => {
     getSubscriptions();
   }, [instance, accounts, setSelectedSubscription]);
 
+  const filteredSubscriptions = subscriptions
+    .sort((a, b) => a.displayName.localeCompare(b.displayName))
+    .filter(sub => 
+      sub.displayName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
   return (
     <div className={styles.subscriptionSection}>
       <button 
@@ -44,18 +51,28 @@ export const SubscriptionDropdown: React.FC = () => {
       </button>
       {isOpen && (
         <div className={styles.dropdownContent}>
-          {subscriptions.map(sub => (
-            <div
-              key={sub.subscriptionId}
-              className={styles.dropdownItem}
-              onClick={() => {
-                setSelectedSubscription(sub);
-                setIsOpen(false);
-              }}
-            >
-              {sub.displayName}
-            </div>
-          ))}
+          <input
+            type="search"
+            placeholder="Search subscriptions..."
+            className={styles.searchInput}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
+          />
+          <div className={styles.dropdownList}>
+            {filteredSubscriptions.map(sub => (
+              <div
+                key={sub.subscriptionId}
+                className={styles.dropdownItem}
+                onClick={() => {
+                  setSelectedSubscription(sub);
+                  setIsOpen(false);
+                }}
+              >
+                {sub.displayName}
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
