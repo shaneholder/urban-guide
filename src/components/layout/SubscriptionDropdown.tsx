@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useMsal } from "@azure/msal-react";
 import { fetchAzureResources } from '../../services/azureApi';
 import { loginRequest } from '../../config/msal';
+import { useSubscription } from '../../context/SubscriptionContext';
 import styles from './AzureNavigation.module.css';
 
 interface Subscription {
@@ -11,9 +12,9 @@ interface Subscription {
 
 export const SubscriptionDropdown: React.FC = () => {
   const { instance, accounts } = useMsal();
+  const { selectedSubscription, setSelectedSubscription } = useSubscription();
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState<Subscription | null>(null);
 
   useEffect(() => {
     const getSubscriptions = async () => {
@@ -24,14 +25,14 @@ export const SubscriptionDropdown: React.FC = () => {
         });
         const data = await fetchAzureResources(authResult);
         setSubscriptions(data);
-        if (data.length > 0) setSelected(data[0]);
+        if (data.length > 0) setSelectedSubscription(data[0]);
       } catch (error) {
         console.error('Error fetching subscriptions:', error);
       }
     };
 
     getSubscriptions();
-  }, [instance, accounts]);
+  }, [instance, accounts, setSelectedSubscription]);
 
   return (
     <div className={styles.subscriptionSection}>
@@ -39,7 +40,7 @@ export const SubscriptionDropdown: React.FC = () => {
         className={styles.dropdownButton}
         onClick={() => setIsOpen(!isOpen)}
       >
-        {selected?.displayName || 'Select subscription'}
+        {selectedSubscription?.displayName || 'Select subscription'}
       </button>
       {isOpen && (
         <div className={styles.dropdownContent}>
@@ -48,7 +49,7 @@ export const SubscriptionDropdown: React.FC = () => {
               key={sub.subscriptionId}
               className={styles.dropdownItem}
               onClick={() => {
-                setSelected(sub);
+                setSelectedSubscription(sub);
                 setIsOpen(false);
               }}
             >
