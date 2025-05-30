@@ -7,18 +7,11 @@ import { useAuth } from '../hooks/useAuth';
 import { fetchAzureResourceGroups } from '../services/azureApi';
 import { AuthError } from '@azure/msal-browser';
 
-interface ResourceGroup {
-  id: string;
-  name: string;
-  location: string;
-  type: string;
-}
-
-const ResourceGroups: React.FC<{ subscriptionId: string }> = ({ subscriptionId }) => {
+const ResourceGroups = ({ subscriptionId }) => {
   const { instance, accounts } = useMsal();
   const { handleAuthError } = useAuth();
-  const [resourceGroups, setResourceGroups] = useState<ResourceGroup[]>([]);
-  const [selectedGroups, setSelectedGroups] = useState<Set<string>>(new Set());
+  const [resourceGroups, setResourceGroups] = useState([]);
+  const [selectedGroups, setSelectedGroups] = useState(new Set());
   const [loading, setLoading] = useState(true);
   const [showAccessCreate, setShowAccessCreate] = useState(false);
 
@@ -50,7 +43,7 @@ const ResourceGroups: React.FC<{ subscriptionId: string }> = ({ subscriptionId }
     fetchResourceGroups();
   }, [subscriptionId, instance, accounts, handleAuthError]);
 
-  const toggleSelection = (id: string) => {
+  const toggleSelection = (id) => {
     const newSelected = new Set(selectedGroups);
     if (newSelected.has(id)) {
       newSelected.delete(id);

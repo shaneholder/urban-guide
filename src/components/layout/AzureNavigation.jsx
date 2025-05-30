@@ -9,7 +9,7 @@ import styles from './AzureNavigation.module.css';
 import { SubscriptionDropdown } from './SubscriptionDropdown';
 import { useSubscription } from '../../context/SubscriptionContext';
 
-export const AzureNavigation: React.FC = () => {
+export const AzureNavigation = () => {
   const { selectedNav, setSelectedNav } = useSubscription();
 
   const navItems = [
@@ -19,7 +19,7 @@ export const AzureNavigation: React.FC = () => {
     { icon: <Star24Regular />, label: 'Favorites' }
   ];
 
-  const handleNavClick = (label: string) => {
+  const handleNavClick = (label) => {
     setSelectedNav(label === selectedNav ? null : label);
   };
 

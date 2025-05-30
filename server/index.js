@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
-import azureRoutes from './routes/azure';
+import azureRoutes from './routes/azure.js';
 
 const app = express();
 const port = process.env.PORT || 3001;

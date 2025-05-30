@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './AzureHeader.module.css';
 
-export const AzureHeader: React.FC = () => {
+export const AzureHeader = () => {
   return (
     <header className={styles.header}>
       <div className={styles.left}>

@@ -5,15 +5,10 @@ import { loginRequest } from '../../config/msal';
 import { useSubscription } from '../../context/SubscriptionContext';
 import styles from './AzureNavigation.module.css';
 
-interface Subscription {
-  subscriptionId: string;
-  displayName: string;
-}
-
-export const SubscriptionDropdown: React.FC = () => {
+export const SubscriptionDropdown = () => {
   const { instance, accounts } = useMsal();
   const { selectedSubscription, setSelectedSubscription } = useSubscription();
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [subscriptions, setSubscriptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 

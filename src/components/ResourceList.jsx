@@ -6,23 +6,12 @@ import styles from './ResourceList.module.css';
 import ResourceGroups from './ResourceGroups';
 import { AzurePortalLayout } from './layout/AzurePortalLayout';
 
-interface Resource {
-  id: string;
-  displayName: string;
-  type: string;
-}
-
-interface Subscription {
-  subscriptionId: string;
-  displayName: string;
-}
-
 const ResourceList = () => {
   const { instance, accounts } = useMsal();
-  const [subscriptions, setResources] = useState<Subscription[]>([]);
+  const [subscriptions, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
+  const [error, setError] = useState(null);
+  const [selectedSubscription, setSelectedSubscription] = useState(null);
 
   useEffect(() => {
     const getResources = async () => {
@@ -44,7 +33,7 @@ const ResourceList = () => {
     getResources();
   }, [instance, accounts]);
 
-  const handleSubscriptionClick = (subscription: Subscription) => {
+  const handleSubscriptionClick = (subscription) => {
     setSelectedSubscription(subscription);
   };
 
