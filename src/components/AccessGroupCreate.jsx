@@ -21,6 +21,10 @@ const AccessGroupCreate = ({ selectedGroups, onCancel }) => {
         const rolesData = await fetchAzureRoles(token);
         setRoles(rolesData);
       } catch (error) {
+        if (error.response && error.response.status === 401 && error.response.data && error.response.data.reauth) {
+          window.location.reload(); // Or redirect to login page
+          return;
+        }
         console.error('Error loading roles:', error);
       } finally {
         setLoading(false);

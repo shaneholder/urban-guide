@@ -49,4 +49,15 @@ export const fetchAzureRoles = async (authResult) => {
     }
   });
   return response.json();
-};
+}
+
+// Utility to handle API errors globally
+export function handleApiError(error, response) {
+  if (response && response.status === 401 && response.data && response.data.reauth) {
+    // Token expired, force re-authentication
+    window.location.reload(); // Or redirect to login page if you have a route
+    return;
+  }
+  // Optionally handle other errors
+  throw error;
+}

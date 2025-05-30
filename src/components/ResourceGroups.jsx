@@ -23,17 +23,18 @@ const ResourceGroups = ({ subscriptionId }) => {
           account: accounts[0]
         });
         const authResult = await instance.acquireTokenSilent({
-                  ...loginRequest,
-                  account: accounts[0]
-                });
+          ...loginRequest,
+          account: accounts[0]
+        });
         const data = await fetchAzureResourceGroups(authResult, subscriptionId)
-        
         setResourceGroups(data);
       } catch (error) {
+        if (error.response && error.response.status === 401 && error.response.data && error.response.data.reauth) {
+          window.location.reload(); // Or redirect to login page
+          return;
+        }
         if (error instanceof AuthError) {
           await handleAuthError(error);
-        } else {
-          console.error('Error fetching resource groups:', error);
         }
       } finally {
         setLoading(false);
@@ -41,7 +42,7 @@ const ResourceGroups = ({ subscriptionId }) => {
     };
 
     fetchResourceGroups();
-  }, [subscriptionId, instance, accounts, handleAuthError]);
+  }, [instance, accounts, subscriptionId, handleAuthError]);
 
   const toggleSelection = (id) => {
     const newSelected = new Set(selectedGroups);
