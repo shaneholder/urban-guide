@@ -23,6 +23,10 @@ const ResourceList = () => {
         const data = await fetchAzureResources(authResult);
         setResources(data);
       } catch (error) {
+        if (error.response && error.response.status === 401 && error.response.data && error.response.data.reauth) {
+          window.location.reload(); // Or redirect to login page
+          return;
+        }
         console.error('Error fetching resources:', error);
         setError('Error fetching resources');
       } finally {

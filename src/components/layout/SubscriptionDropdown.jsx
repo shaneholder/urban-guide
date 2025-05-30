@@ -3,11 +3,13 @@ import { useMsal } from "@azure/msal-react";
 import { fetchAzureResources } from '../../services/azureApi';
 import { loginRequest } from '../../config/msal';
 import { useSubscription } from '../../context/SubscriptionContext';
+import { useAuth } from '../../hooks/useAuth';
 import styles from './AzureNavigation.module.css';
 
 export const SubscriptionDropdown = () => {
   const { instance, accounts } = useMsal();
   const { selectedSubscription, setSelectedSubscription } = useSubscription();
+  const { handleAuthError } = useAuth();
   const [subscriptions, setSubscriptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -23,12 +25,19 @@ export const SubscriptionDropdown = () => {
         setSubscriptions(data);
         if (data.length > 0) setSelectedSubscription(data[0]);
       } catch (error) {
+        if (error.response && error.response.status === 401 && error.response.data && error.response.data.reauth) {
+          window.location.reload(); // Or redirect to login page
+          return;
+        }
+        if (typeof handleAuthError === 'function') {
+          await handleAuthError(error);
+        }
         console.error('Error fetching subscriptions:', error);
       }
     };
 
     getSubscriptions();
-  }, [instance, accounts, setSelectedSubscription]);
+  }, [instance, accounts, setSelectedSubscription, handleAuthError]);
 
   const filteredSubscriptions = subscriptions
     .sort((a, b) => a.displayName.localeCompare(b.displayName))

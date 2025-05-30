@@ -50,6 +50,13 @@ export const authMiddleware = async (
       next();
     } catch (verifyError) {
       console.error('Token verification failed:', verifyError);
+      // If token expired, redirect to login
+      if (verifyError.name === 'TokenExpiredError') {
+        // For API: send 401 with a flag to indicate re-authentication is needed
+        return res.status(401).json({ message: 'Token expired. Please reauthenticate.', reauth: true, code: 'TOKEN_EXPIRED'  });
+        // If this was a web app route, you could use:
+        // return res.redirect('/login');
+      }
       return res.status(401).json({ message: 'Invalid token' });
     }
   } catch (error) {
