@@ -1,13 +1,11 @@
-import { AuthenticationResult } from "@azure/msal-browser";
-
 export class AuthError extends Error {
-  constructor(message: string) {
+  constructor(message) {
     super(message);
     this.name = 'AuthError';
   }
 }
 
-const handleApiResponse = async (response: Response) => {
+const handleApiResponse = async (response) => {
   if (response.status === 401) {
     const error = await response.json();
     if (error.code === 'TOKEN_EXPIRED') {
@@ -17,7 +15,7 @@ const handleApiResponse = async (response: Response) => {
   return response.json();
 };
 
-export const fetchAzureResources = async (authResult: AuthenticationResult) => {
+export const fetchAzureResources = async (authResult) => {
   const response = await fetch('/api/resources', {
     headers: {
       'Authorization': `Bearer ${authResult.accessToken}`
@@ -26,7 +24,7 @@ export const fetchAzureResources = async (authResult: AuthenticationResult) => {
   return handleApiResponse(response);
 };
 
-export const fetchAzureResourceGroups = async (authResult: AuthenticationResult, subscriptionId: string) => {
+export const fetchAzureResourceGroups = async (authResult, subscriptionId) => {
   const response = await fetch(`/api/subscriptions/${subscriptionId}/resourceGroups`, {
     headers: {
       'Authorization': `Bearer ${authResult.accessToken}`
@@ -36,18 +34,19 @@ export const fetchAzureResourceGroups = async (authResult: AuthenticationResult,
   return handleApiResponse(response);
 };
 
-export interface AzureRole {
-  id: string;
-  roleName: string;
-  description: string;
-  type: 'BuiltInRole' | 'CustomRole';
-}
+/**
+ * @typedef {Object} AzureRole
+ * @property {string} id
+ * @property {string} roleName
+ * @property {string} description
+ * @property {string} type
+ */
 
-export const fetchAzureRoles = async (authResult: AuthenticationResult) => {
+export const fetchAzureRoles = async (authResult) => {
   const response = await fetch('/api/roles', {
     headers: {
       'Authorization': `Bearer ${authResult.accessToken}`
     }
   });
-  return response.json() as Promise<AzureRole[]>;
+  return response.json();
 };

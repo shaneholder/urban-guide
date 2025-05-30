@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useMsal } from "@azure/msal-react";
 import { loginRequest } from '../config/msal';
-import { fetchAzureRoles, AzureRole } from '../services/rolesService';
+import { fetchAzureRoles } from '../services/rolesService';
 import styles from './AccessGroupCreate.module.css';
 
-interface AccessGroupCreateProps {
-  selectedGroups: string[];
-  onCancel: () => void;
-}
-
-const AccessGroupCreate: React.FC<AccessGroupCreateProps> = ({ selectedGroups, onCancel }) => {
+const AccessGroupCreate = ({ selectedGroups, onCancel }) => {
   const { instance, accounts } = useMsal();
-  const [roles, setRoles] = useState<AzureRole[]>([]);
+  const [roles, setRoles] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
-  const [selectedRole, setSelectedRole] = useState<string | null>(null);
+  const [selectedRole, setSelectedRole] = useState(null);
 
   useEffect(() => {
     const loadRoles = async () => {

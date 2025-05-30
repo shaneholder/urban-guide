@@ -1,6 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import express from 'express';
+import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
+
+const { Request, Response, NextFunction } = express;
 
 const client = jwksClient({
   jwksUri: `https://login.microsoftonline.com/${process.env.VITE_AZURE_TENANT_ID}/discovery/v2.0/keys`,
@@ -10,29 +12,11 @@ const client = jwksClient({
   timeout: 30000 // Timeout after 30s
 });
 
-interface AzureToken extends JwtPayload {
-  aud: string;
-  iss: string;
-  iat: number;
-  nbf: number;
-  exp: number;
-  aio: string;
-  appid: string;
-  appidacr: string;
-  idp: string;
-  oid: string;
-  rh: string;
-  sub: string;
-  tid: string;
-  uti: string;
-  ver: string;
-}
-
 export const authMiddleware = async (
-  req: Request<any, any, any, any>, 
-  res: Response<any>, 
-  next: NextFunction
-): Promise<void | Response<any, Record<string, any>>> => {
+  req, 
+  res, 
+  next
+) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
 
@@ -55,7 +39,7 @@ export const authMiddleware = async (
         issuer: `https://sts.windows.net/${process.env.VITE_AZURE_TENANT_ID}/`,
         clockTolerance: 30, // 30 seconds clock skew tolerance
         maxAge: '1h' // Token must not be older than 1 hour
-      }) as AzureToken;
+      });
 
       // Check additional claims
       if (!verified.oid || !verified.tid || verified.tid !== process.env.VITE_AZURE_TENANT_ID) {

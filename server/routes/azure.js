@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { authMiddleware } from '../middleware/auth';
+import { authMiddleware } from '../middleware/auth.js';
 import fetch from 'node-fetch';
-import { AzureSubscription, AzureResourceGroup, AzureListResponse } from '../types/azure';
 
 const router = Router();
 
@@ -27,7 +26,7 @@ router.get('/resources', async (req, res) => {
       }
     );
     
-    const data = await response.json() as AzureListResponse<AzureSubscription>;
+    const data = await response.json();
     res.json(data.value);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch Azure resources' });
@@ -48,7 +47,7 @@ router.get('/subscriptions/:subscriptionId/resourceGroups', async (req, res) => 
       }
     );
     
-    const data = await response.json() as AzureListResponse<AzureResourceGroup>;
+    const data = await response.json();
     res.json(data.value);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch resource groups' });
@@ -67,8 +66,8 @@ router.get('/roles', async (req, res) => {
       }
     );
 
-    const data = await response.json() as { value: any[] };
-    const roles = data.value.map((role: any) => ({
+    const data = await response.json();
+    const roles = data.value.map((role) => ({
       id: role.name,
       roleName: role.properties.roleName,
       description: role.properties.description,

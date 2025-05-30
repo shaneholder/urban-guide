@@ -6,7 +6,7 @@ import ResourceGroups from '../ResourceGroups';
 import { useSubscription } from '../../context/SubscriptionContext';
 import { SubscriptionProvider } from '../../context/SubscriptionContext';
 
-export const AzurePortalLayout: React.FC<{children: React.ReactNode}> = ({ children }) => {
+export const AzurePortalLayout = ({ children }) => {
   return (
     <SubscriptionProvider>
       <Layout>{children}</Layout>
@@ -14,7 +14,7 @@ export const AzurePortalLayout: React.FC<{children: React.ReactNode}> = ({ child
   );
 };
 
-const Layout: React.FC<{children: React.ReactNode}> = ({ children }) => {
+const Layout = ({ children }) => {
   const { selectedNav, selectedSubscription } = useSubscription();
 
   return (
