@@ -4,6 +4,7 @@ import { fetchAzureResources } from '../services/azureApi';
 import { loginRequest } from '../config/msal';
 import styles from './ResourceList.module.css';
 import ResourceGroups from './ResourceGroups';
+import { AzurePortalLayout } from './layout/AzurePortalLayout';
 
 interface Resource {
   id: string;
@@ -48,29 +49,31 @@ const ResourceList = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <h2>Your Azure Subscriptions</h2>
-      {loading && <p>Loading subscriptions...</p>}
-      {error && <p>Error: {error}</p>}
-      <div className={styles.grid}>
-        <ul className={styles.list}>
-          {subscriptions.map(sub => (
-            <li 
-              key={sub.subscriptionId} 
-              className={`${styles.listItem} ${selectedSubscription?.subscriptionId === sub.subscriptionId ? styles.selected : ''}`}
-              onClick={() => handleSubscriptionClick(sub)}
-            >
-              {sub.displayName}
-            </li>
-          ))}
-        </ul>
-        {selectedSubscription && (
-          <ResourceGroups 
-            subscriptionId={selectedSubscription.subscriptionId}
-          />
-        )}
+    <AzurePortalLayout>
+      <div className={styles.container}>
+        <h2>Your Azure Subscriptions</h2>
+        {loading && <p>Loading subscriptions...</p>}
+        {error && <p>Error: {error}</p>}
+        <div className={styles.grid}>
+          <ul className={styles.list}>
+            {subscriptions.map(sub => (
+              <li 
+                key={sub.subscriptionId} 
+                className={`${styles.listItem} ${selectedSubscription?.subscriptionId === sub.subscriptionId ? styles.selected : ''}`}
+                onClick={() => handleSubscriptionClick(sub)}
+              >
+                {sub.displayName}
+              </li>
+            ))}
+          </ul>
+          {selectedSubscription && (
+            <ResourceGroups 
+              subscriptionId={selectedSubscription.subscriptionId}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </AzurePortalLayout>
   );
 };
 

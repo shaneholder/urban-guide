@@ -21,7 +21,8 @@
     "jwks-rsa": "^3.0.1",
     "helmet": "^7.0.0",
     "express-rate-limit": "^7.0.0",
-    "hpp": "^0.2.3"
+    "hpp": "^0.2.3",
+    "@fluentui/react-icons": "^2.0.224"
   },
   "scripts": {
     "start": "vite",
