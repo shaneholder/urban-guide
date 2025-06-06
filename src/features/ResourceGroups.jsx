@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useMsal } from "@azure/msal-react";
 import { loginRequest } from '../config/msal';
 import styles from './ResourceGroups.module.css';
-import AccessGroupCreate from './AccessGroupCreate';
+import AccessGroupCreate from '../features/AccessGroupCreate';
 import { useAuth } from '../hooks/useAuth';
 import { fetchAzureResourceGroups } from '../services/azureApi';
 import { AuthError } from '@azure/msal-browser';
-import { AzureNavigation } from '../layout/AzureNavigation';
+import { AzureNavigation } from '../components/AzureNavigation';
 import {
   Home24Regular,
   Apps24Regular,
