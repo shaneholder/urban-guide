@@ -2,9 +2,9 @@ import React from 'react';
 import styles from './AzurePortalLayout.module.css';
 import { AzureHeader } from './AzureHeader';
 import { AzureNavigation } from './AzureNavigation';
-import ResourceGroups from '../ResourceGroups';
-import { useSubscription } from '../../context/SubscriptionContext';
-import { SubscriptionProvider } from '../../context/SubscriptionContext';
+import ResourceGroups from '../components/ResourceGroups';
+import { useSubscription } from '../context/SubscriptionContext';
+import { SubscriptionProvider } from '../context/SubscriptionContext';
 import {
   Home24Regular,
   Apps24Regular,

@@ -4,7 +4,7 @@ import { fetchAzureResources } from '../services/azureApi';
 import { loginRequest } from '../config/msal';
 import styles from './ResourceList.module.css';
 import ResourceGroups from './ResourceGroups';
-import { AzurePortalLayout } from './layout/AzurePortalLayout';
+import { AzurePortalLayout } from '../layout/AzurePortalLayout';
 
 const ResourceList = () => {
   const { instance, accounts } = useMsal();

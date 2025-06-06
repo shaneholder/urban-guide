@@ -6,7 +6,7 @@ import AccessGroupCreate from './AccessGroupCreate';
 import { useAuth } from '../hooks/useAuth';
 import { fetchAzureResourceGroups } from '../services/azureApi';
 import { AuthError } from '@azure/msal-browser';
-import { AzureNavigation } from './layout/AzureNavigation';
+import { AzureNavigation } from '../layout/AzureNavigation';
 import {
   Home24Regular,
   Apps24Regular,
