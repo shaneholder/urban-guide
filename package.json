@@ -5,17 +5,18 @@
   "dependencies": {
     "@azure/msal-browser": "^4.9.1",
     "@azure/msal-react": "^3.0.8",
+    "@fluentui/react-icons": "^2.0.224",
     "cors": "^2.8.5",
     "express": "^4.21.2",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "node-fetch": "^3.3.2",
+    "express-rate-limit": "^7.0.0",
+    "helmet": "^7.0.0",
+    "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.0",
     "jwks-rsa": "^3.0.1",
-    "helmet": "^7.0.0",
-    "express-rate-limit": "^7.0.0",
-    "hpp": "^0.2.3",
-    "@fluentui/react-icons": "^2.0.224"
+    "node-fetch": "^3.3.2",
+    "prop-types": "^15.8.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "scripts": {
     "start": "vite",

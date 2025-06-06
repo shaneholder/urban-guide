@@ -4,7 +4,7 @@ import { loginRequest } from '../config/msal';
 import { fetchAzureRoles } from '../services/rolesService';
 import styles from './AccessGroupCreate.module.css';
 
-const AccessGroupCreate = ({ selectedGroups, onCancel }) => {
+const AccessGroupCreate = ({ selectedGroups, onCancel, selectedSubscription }) => {
   const { instance, accounts } = useMsal();
   const [roles, setRoles] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -39,6 +39,14 @@ const AccessGroupCreate = ({ selectedGroups, onCancel }) => {
       role.roleName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       role.description.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+  // Extract prefix from selectedSubscription
+  let subscriptionPrefix = "";
+  if (selectedSubscription && typeof selectedSubscription === 'string') {
+    subscriptionPrefix = selectedSubscription.split('_')[0];
+  } else if (selectedSubscription && selectedSubscription.subscriptionId) {
+    subscriptionPrefix = selectedSubscription.subscriptionId.split('_')[0];
+  }
 
   return (
     <div className={styles.container}>
@@ -86,6 +94,16 @@ const AccessGroupCreate = ({ selectedGroups, onCancel }) => {
               ))}
             </div>
           )}
+        </div>
+
+        <div className={styles.section}>
+          <h3>Resulting Group ID</h3>
+          <input
+            type="text"
+            value={subscriptionPrefix && groupName ? `${subscriptionPrefix}_${groupName}` : ""}
+            readOnly
+            className={styles.input}
+          />
         </div>
       </div>
     </div>

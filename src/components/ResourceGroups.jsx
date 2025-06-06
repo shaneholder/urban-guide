@@ -6,6 +6,13 @@ import AccessGroupCreate from './AccessGroupCreate';
 import { useAuth } from '../hooks/useAuth';
 import { fetchAzureResourceGroups } from '../services/azureApi';
 import { AuthError } from '@azure/msal-browser';
+import { AzureNavigation } from './layout/AzureNavigation';
+import {
+  Home24Regular,
+  Apps24Regular,
+  BoxMultiple24Regular,
+  Star24Regular
+} from '@fluentui/react-icons';
 
 const ResourceGroups = ({ subscriptionId }) => {
   const { instance, accounts } = useMsal();
@@ -15,6 +22,13 @@ const ResourceGroups = ({ subscriptionId }) => {
   const [loading, setLoading] = useState(true);
   const [showAccessCreate, setShowAccessCreate] = useState(false);
 
+  const navItems = [
+      { icon: <Home24Regular />, label: 'Home' },
+      { icon: <Apps24Regular />, label: 'All services' },
+      { icon: <BoxMultiple24Regular />, label: 'Resource groups' },
+      { icon: <Star24Regular />, label: 'Favorites' }
+    ];
+      
   useEffect(() => {
     const fetchResourceGroups = async () => {
       try {
@@ -78,6 +92,7 @@ const ResourceGroups = ({ subscriptionId }) => {
 
   return (
     <div className={styles.container}>
+      <AzureNavigation navItems={navItems} />
       <div className={styles.header}>
         <h2>Resource Groups</h2>
         <div className={styles.actions}>
