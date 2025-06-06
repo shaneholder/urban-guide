@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useMsal } from "@azure/msal-react";
-import { fetchAzureResources } from '../../services/azureApi';
-import { loginRequest } from '../../config/msal';
-import { useSubscription } from '../../context/SubscriptionContext';
-import { useAuth } from '../../hooks/useAuth';
+import { fetchAzureResources } from '../services/azureApi';
+import { loginRequest } from '../config/msal';
+import { useSubscription } from '../context/SubscriptionContext';
+import { useAuth } from '../hooks/useAuth';
 import styles from './AzureNavigation.module.css';
 
 export const SubscriptionDropdown = () => {
