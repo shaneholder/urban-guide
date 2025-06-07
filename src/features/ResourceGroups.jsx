@@ -6,7 +6,7 @@ import AccessGroupCreate from '../features/AccessGroupCreate';
 import { useAuth } from '../hooks/useAuth';
 import { fetchAzureResourceGroups } from '../services/azureApi';
 import { AuthError } from '@azure/msal-browser';
-import { AzureNavigation } from '../components/NavigationBlade';
+import { Navigation } from '../components/Navigation';
 import {
   Home24Regular,
   Apps24Regular,
@@ -89,8 +89,7 @@ const ResourceGroups = ({ subscriptionId }) => {
   }
 
   return (
-    <div className={styles.container}>
-      <AzureNavigation navItems={navItems} />
+    <Navigation navItems={navItems}>
       <div>
         <div className={styles.header}>
           <h2>Resource Groups</h2>
@@ -139,7 +138,7 @@ const ResourceGroups = ({ subscriptionId }) => {
           )}
         </div>
       </div>
-    </div>
+    </Navigation>    
   );
 };
 

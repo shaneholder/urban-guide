@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './AzurePortalLayout.module.css';
 import { AzureHeader } from './AzureHeader';
-import { AzureNavigation } from '../components/NavigationBlade';
+import { NavigationBlade } from '../components/NavigationBlade';
 import ResourceGroups from '../features/ResourceGroups';
 import { useSubscription } from '../context/SubscriptionContext';
 import { SubscriptionProvider } from '../context/SubscriptionContext';
@@ -34,7 +34,7 @@ const Layout = ({ children }) => {
     <div className={styles.layout}>
       <AzureHeader />
       <div className={styles.content}>
-        <AzureNavigation navItems={navItems} />
+        <NavigationBlade navItems={navItems} />
         <main className={styles.mainContent}>
           {selectedNav === 'Resource groups' && selectedSubscription ? (
             <ResourceGroups subscriptionId={selectedSubscription.subscriptionId} />

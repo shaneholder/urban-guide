@@ -4,7 +4,7 @@ import { SubscriptionDropdown } from './SubscriptionDropdown';
 import { useSubscription } from '../context/SubscriptionContext';
 import PropTypes from 'prop-types';
 
-export const AzureNavigation = ({navItems}) => {
+export const NavigationBlade = ({navItems}) => {
   const { selectedNav, setSelectedNav } = useSubscription();  
 
   const handleNavClick = (label) => {
