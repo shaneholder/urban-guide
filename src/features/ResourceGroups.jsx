@@ -23,10 +23,8 @@ const ResourceGroups = ({ subscriptionId }) => {
   const [showAccessCreate, setShowAccessCreate] = useState(false);
 
   const navItems = [
-      { icon: <Home24Regular />, label: 'Home' },
-      { icon: <Apps24Regular />, label: 'All services' },
-      { icon: <BoxMultiple24Regular />, label: 'Resource groups' },
-      { icon: <Star24Regular />, label: 'Favorites' }
+      { icon: <Home24Regular />, label: 'This Stuff' },
+      { icon: <Apps24Regular />, label: 'That Stuff' }
     ];
       
   useEffect(() => {
@@ -93,51 +91,53 @@ const ResourceGroups = ({ subscriptionId }) => {
   return (
     <div className={styles.container}>
       <AzureNavigation navItems={navItems} />
-      <div className={styles.header}>
-        <h2>Resource Groups</h2>
-        <div className={styles.actions}>
-          <button 
-            className={styles.button}
-            onClick={handleCreateAccess}
-            disabled={selectedGroups.size === 0}
-          >
-            Create Access Group
-          </button>
-        </div>
-      </div>
-
-      <div className={styles.grid}>
-        <div className={styles.gridHeader}>
-          <div className={styles.checkbox}>
-            <input 
-              type="checkbox"
-              checked={selectedGroups.size === resourceGroups.length}
-              onChange={toggleAll}
-            />
+      <div>
+        <div className={styles.header}>
+          <h2>Resource Groups</h2>
+          <div className={styles.actions}>
+            <button 
+              className={styles.button}
+              onClick={handleCreateAccess}
+              disabled={selectedGroups.size === 0}
+            >
+              Create Access Group
+            </button>
           </div>
-          <div>Name</div>
-          <div>Location</div>
-          <div>Type</div>
         </div>
 
-        {loading ? (
-          <div className={styles.loading}>Loading resource groups...</div>
-        ) : (
-          resourceGroups.map(group => (
-            <div key={group.id} className={styles.gridRow}>
-              <div className={styles.checkbox}>
-                <input
-                  type="checkbox"
-                  checked={selectedGroups.has(group.id)}
-                  onChange={() => toggleSelection(group.id)}
-                />
-              </div>
-              <div>{group.name}</div>
-              <div>{group.location}</div>
-              <div>{group.type}</div>
+        <div className={styles.grid}>
+          <div className={styles.gridHeader}>
+            <div className={styles.checkbox}>
+              <input 
+                type="checkbox"
+                checked={selectedGroups.size === resourceGroups.length}
+                onChange={toggleAll}
+              />
             </div>
-          ))
-        )}
+            <div>Name</div>
+            <div>Location</div>
+            <div>Type</div>
+          </div>
+
+          {loading ? (
+            <div className={styles.loading}>Loading resource groups...</div>
+          ) : (
+            resourceGroups.map(group => (
+              <div key={group.id} className={styles.gridRow}>
+                <div className={styles.checkbox}>
+                  <input
+                    type="checkbox"
+                    checked={selectedGroups.has(group.id)}
+                    onChange={() => toggleSelection(group.id)}
+                  />
+                </div>
+                <div>{group.name}</div>
+                <div>{group.location}</div>
+                <div>{group.type}</div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

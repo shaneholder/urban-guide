@@ -6,6 +6,10 @@
   margin-bottom: 24px;
 }
 
+.container {
+  display: flex;
+}
+
 .actions {
   display: flex;
   gap: 8px;
