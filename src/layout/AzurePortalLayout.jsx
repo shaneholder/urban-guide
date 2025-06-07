@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './AzurePortalLayout.module.css';
 import { AzureHeader } from './AzureHeader';
-import { AzureNavigation } from '../components/AzureNavigation';
+import { AzureNavigation } from '../components/NavigationBlade';
 import ResourceGroups from '../features/ResourceGroups';
 import { useSubscription } from '../context/SubscriptionContext';
 import { SubscriptionProvider } from '../context/SubscriptionContext';

@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './AzureNavigation.module.css';
+import styles from './NavigationBlade.module.css';
 import { SubscriptionDropdown } from './SubscriptionDropdown';
 import { useSubscription } from '../context/SubscriptionContext';
 import PropTypes from 'prop-types';

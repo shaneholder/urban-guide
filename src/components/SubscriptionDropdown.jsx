@@ -4,7 +4,7 @@ import { fetchAzureResources } from '../services/azureApi';
 import { loginRequest } from '../config/msal';
 import { useSubscription } from '../context/SubscriptionContext';
 import { useAuth } from '../hooks/useAuth';
-import styles from './AzureNavigation.module.css';
+import styles from './NavigationBlade.module.css';
 
 export const SubscriptionDropdown = () => {
   const { instance, accounts } = useMsal();
