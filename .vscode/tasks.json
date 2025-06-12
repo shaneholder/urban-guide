@@ -20,8 +20,17 @@
     },
     {
       "label": "start-dev",
-      "dependsOn": ["start-vite"],
+      "dependsOn": [
+        "start-vite"
+      ],
       "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "dev",
+      "problemMatcher": [],
+      "label": "npm: dev",
+      "detail": "concurrently \"npm run server\" \"npm run start\""
     }
   ]
 }

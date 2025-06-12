@@ -7,6 +7,10 @@ import { useAuth } from '../hooks/useAuth';
 import { fetchAzureResourceGroups } from '../services/azureApi';
 import { AuthError } from '@azure/msal-browser';
 import { Navigation } from '../components/Navigation';
+import { SubscriptionDropdown } from '../components/SubscriptionDropdown';
+import { useSubscription, SubscriptionProvider } from '../context/SubscriptionContext';
+
+
 import {
   Home24Regular,
   Apps24Regular,
@@ -14,7 +18,7 @@ import {
   Star24Regular
 } from '@fluentui/react-icons';
 
-const ResourceGroups = ({ subscriptionId }) => {
+const ResourceGroups = () => {
   const { instance, accounts } = useMsal();
   const { handleAuthError } = useAuth();
   const [resourceGroups, setResourceGroups] = useState([]);
@@ -22,12 +26,31 @@ const ResourceGroups = ({ subscriptionId }) => {
   const [loading, setLoading] = useState(true);
   const [showAccessCreate, setShowAccessCreate] = useState(false);
 
+
   const navItems = [
       { icon: <Home24Regular />, label: 'This Stuff' },
       { icon: <Apps24Regular />, label: 'That Stuff' }
     ];
       
-  useEffect(() => {
+  
+
+  const handleCreateAccess = () => {
+    if (selectedGroups.size === 0) return;
+    setShowAccessCreate(true);
+  };
+
+  if (showAccessCreate) {
+    return (
+      <AccessGroupCreate
+        selectedGroups={Array.from(selectedGroups)}
+        onCancel={() => setShowAccessCreate(false)}
+      />
+    );
+  }
+
+  const Fred = ({children}) => {
+    const { selectedSubscription } = useSubscription();
+useEffect(() => {
     const fetchResourceGroups = async () => {
       try {
         const token = await instance.acquireTokenSilent({
@@ -38,7 +61,7 @@ const ResourceGroups = ({ subscriptionId }) => {
           ...loginRequest,
           account: accounts[0]
         });
-        const data = await fetchAzureResourceGroups(authResult, subscriptionId)
+        const data = await fetchAzureResourceGroups(authResult, selectedSubscription.subscriptionId)
         setResourceGroups(data);
       } catch (error) {
         if (error.response && error.response.status === 401 && error.response.data && error.response.data.reauth) {
@@ -54,7 +77,7 @@ const ResourceGroups = ({ subscriptionId }) => {
     };
 
     fetchResourceGroups();
-  }, [instance, accounts, subscriptionId, handleAuthError]);
+  }, [instance, accounts, selectedSubscription, handleAuthError]);
 
   const toggleSelection = (id) => {
     const newSelected = new Set(selectedGroups);
@@ -73,26 +96,11 @@ const ResourceGroups = ({ subscriptionId }) => {
       setSelectedGroups(new Set(resourceGroups.map(rg => rg.id)));
     }
   };
-
-  const handleCreateAccess = () => {
-    if (selectedGroups.size === 0) return;
-    setShowAccessCreate(true);
-  };
-
-  if (showAccessCreate) {
     return (
-      <AccessGroupCreate
-        selectedGroups={Array.from(selectedGroups)}
-        onCancel={() => setShowAccessCreate(false)}
-      />
-    );
-  }
-
-  return (
-    <Navigation navItems={navItems}>
       <div>
         <div className={styles.header}>
           <h2>Resource Groups</h2>
+
           <div className={styles.actions}>
             <button 
               className={styles.button}
@@ -138,7 +146,17 @@ const ResourceGroups = ({ subscriptionId }) => {
           )}
         </div>
       </div>
-    </Navigation>    
+    );
+  }
+  return (
+    <SubscriptionProvider>    
+      <div className={styles.container}>
+        <Navigation navItems={navItems}/>
+        <SubscriptionDropdown/>
+        <Fred />
+
+      </div>
+    </SubscriptionProvider>
   );
 };
 

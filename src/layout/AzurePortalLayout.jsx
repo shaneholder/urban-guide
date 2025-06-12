@@ -28,7 +28,7 @@ const navItems = [
   ];
 
 const Layout = ({ children }) => {
-  const { selectedNav, selectedSubscription } = useSubscription();
+  const { selectedNav } = useSubscription();
 
   return (
     <div className={styles.layout}>
@@ -36,8 +36,8 @@ const Layout = ({ children }) => {
       <Navigation navItems={navItems}>
 
         <main className={styles.mainContent}>
-          {selectedNav === 'Resource groups' && selectedSubscription ? (
-            <ResourceGroups subscriptionId={selectedSubscription.subscriptionId} />
+          {selectedNav === 'Resource groups' ? (
+            <ResourceGroups />
           ) : (
             children
           )}
