@@ -8,14 +8,10 @@ import { fetchAzureResourceGroups } from '../services/azureApi';
 import { AuthError } from '@azure/msal-browser';
 import { Navigation } from '../components/Navigation';
 import { SubscriptionDropdown } from '../components/SubscriptionDropdown';
-import { useSubscription, SubscriptionProvider } from '../context/SubscriptionContext';
-
-
+import { useSubscription } from '../context/SubscriptionContext';
 import {
   Home24Regular,
-  Apps24Regular,
-  BoxMultiple24Regular,
-  Star24Regular
+  Apps24Regular
 } from '@fluentui/react-icons';
 
 const ResourceGroups = () => {
@@ -25,33 +21,16 @@ const ResourceGroups = () => {
   const [selectedGroups, setSelectedGroups] = useState(new Set());
   const [loading, setLoading] = useState(true);
   const [showAccessCreate, setShowAccessCreate] = useState(false);
-
+  const { selectedSubscription } = useSubscription();
 
   const navItems = [
-      { icon: <Home24Regular />, label: 'This Stuff' },
-      { icon: <Apps24Regular />, label: 'That Stuff' }
-    ];
-      
-  
+    { icon: <Home24Regular />, label: 'This Stuff' },
+    { icon: <Apps24Regular />, label: 'That Stuff' }
+  ];
 
-  const handleCreateAccess = () => {
-    if (selectedGroups.size === 0) return;
-    setShowAccessCreate(true);
-  };
-
-  if (showAccessCreate) {
-    return (
-      <AccessGroupCreate
-        selectedGroups={Array.from(selectedGroups)}
-        onCancel={() => setShowAccessCreate(false)}
-      />
-    );
-  }
-
-  const Fred = ({children}) => {
-    const { selectedSubscription } = useSubscription();
-useEffect(() => {
-    const fetchResourceGroups = async () => {
+  useEffect(() => {
+    if (!selectedSubscription) return;
+    const fetchResourceGroupsAsync = async () => {
       try {
         const token = await instance.acquireTokenSilent({
           ...loginRequest,
@@ -61,7 +40,7 @@ useEffect(() => {
           ...loginRequest,
           account: accounts[0]
         });
-        const data = await fetchAzureResourceGroups(authResult, selectedSubscription.subscriptionId)
+        const data = await fetchAzureResourceGroups(authResult, selectedSubscription.subscriptionId);
         setResourceGroups(data);
       } catch (error) {
         if (error.response && error.response.status === 401 && error.response.data && error.response.data.reauth) {
@@ -75,9 +54,13 @@ useEffect(() => {
         setLoading(false);
       }
     };
+    fetchResourceGroupsAsync();
+  }, [instance, accounts, handleAuthError, selectedSubscription]);
 
-    fetchResourceGroups();
-  }, [instance, accounts, selectedSubscription, handleAuthError]);
+  const handleCreateAccess = () => {
+    if (selectedGroups.size === 0) return;
+    setShowAccessCreate(true);
+  };
 
   const toggleSelection = (id) => {
     const newSelected = new Set(selectedGroups);
@@ -96,67 +79,69 @@ useEffect(() => {
       setSelectedGroups(new Set(resourceGroups.map(rg => rg.id)));
     }
   };
+
+  if (showAccessCreate) {
     return (
-      <div>
-        <div className={styles.header}>
-          <h2>Resource Groups</h2>
-
-          <div className={styles.actions}>
-            <button 
-              className={styles.button}
-              onClick={handleCreateAccess}
-              disabled={selectedGroups.size === 0}
-            >
-              Create Access Group
-            </button>
-          </div>
-        </div>
-
-        <div className={styles.grid}>
-          <div className={styles.gridHeader}>
-            <div className={styles.checkbox}>
-              <input 
-                type="checkbox"
-                checked={selectedGroups.size === resourceGroups.length}
-                onChange={toggleAll}
-              />
-            </div>
-            <div>Name</div>
-            <div>Location</div>
-            <div>Type</div>
-          </div>
-
-          {loading ? (
-            <div className={styles.loading}>Loading resource groups...</div>
-          ) : (
-            resourceGroups.map(group => (
-              <div key={group.id} className={styles.gridRow}>
-                <div className={styles.checkbox}>
-                  <input
-                    type="checkbox"
-                    checked={selectedGroups.has(group.id)}
-                    onChange={() => toggleSelection(group.id)}
-                  />
-                </div>
-                <div>{group.name}</div>
-                <div>{group.location}</div>
-                <div>{group.type}</div>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
+      <AccessGroupCreate
+        selectedGroups={Array.from(selectedGroups)}
+        onCancel={() => setShowAccessCreate(false)}
+      />
     );
   }
+
   return (
-    <SubscriptionProvider>    
+    <>
       <div className={styles.container}>
         <Navigation navItems={navItems}/>
-        <SubscriptionDropdown/>
-        <Fred />
-
+        <div>
+          <div className={styles.header}>
+            <h2>Resource Groups</h2>
+            <div className={styles.actions}>
+              <SubscriptionDropdown/>
+              <button 
+                className={styles.button}
+                onClick={handleCreateAccess}
+                disabled={selectedGroups.size === 0}
+              >
+                Create Access Group
+              </button>
+            </div>
+          </div>
+          <div className={styles.grid}>
+            <div className={styles.gridHeader}>
+              <div className={styles.checkbox}>
+                <input 
+                  type="checkbox"
+                  checked={selectedGroups.size === resourceGroups.length}
+                  onChange={toggleAll}
+                />
+              </div>
+              <div>Name</div>
+              <div>Location</div>
+              <div>Type</div>
+            </div>
+            {loading ? (
+              <div className={styles.loading}>Loading resource groups...</div>
+            ) : (
+              resourceGroups.map(group => (
+                <div key={group.id} className={styles.gridRow}>
+                  <div className={styles.checkbox}>
+                    <input
+                      type="checkbox"
+                      checked={selectedGroups.has(group.id)}
+                      onChange={() => toggleSelection(group.id)}
+                    />
+                  </div>
+                  <div>{group.name}</div>
+                  <div>{group.location}</div>
+                  <div>{group.type}</div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
-    </SubscriptionProvider>
+    </>
   );
 };
 
