@@ -1,7 +1,7 @@
 import { MsalProvider, AuthenticatedTemplate, UnauthenticatedTemplate } from "@azure/msal-react";
 import { PublicClientApplication } from "@azure/msal-browser";
 import { msalConfig } from "./config/msal";
-import ResourceList from "./components/ResourceList";
+import { AzurePortalLayout } from './layout/AzurePortalLayout';
 import LoginButton from "./components/LoginButton";
 import styles from './App.module.css';
 
@@ -16,7 +16,7 @@ function App() {
         </header>
         <main className={styles.content}>
           <AuthenticatedTemplate>
-            <ResourceList />
+            <AzurePortalLayout />
           </AuthenticatedTemplate>
           <UnauthenticatedTemplate>
             <LoginButton />

@@ -1,10 +1,9 @@
 import React from 'react';
-import styles from './AzureNavigation.module.css';
-import { SubscriptionDropdown } from './SubscriptionDropdown';
+import styles from './NavigationBlade.module.css';
 import { useSubscription } from '../context/SubscriptionContext';
 import PropTypes from 'prop-types';
 
-export const AzureNavigation = ({navItems}) => {
+export const NavigationBlade = ({navItems}) => {
   const { selectedNav, setSelectedNav } = useSubscription();  
 
   const handleNavClick = (label) => {
@@ -13,7 +12,6 @@ export const AzureNavigation = ({navItems}) => {
 
   return (
     <nav className={styles.nav}>
-      <SubscriptionDropdown />
       {navItems.map(item => (
         <button 
           key={item.label} 

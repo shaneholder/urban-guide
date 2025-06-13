@@ -6,9 +6,7 @@
       "request": "launch",
       "name": "Debug Server",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/node_modules/ts-node/dist/bin.js",
-      "args": ["${workspaceFolder}/server/index.ts"],
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "program": "${workspaceFolder}/server/index.js",
       "envFile": "${workspaceFolder}/.env",
       "console": "integratedTerminal"
     },
